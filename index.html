@@ -127,6 +127,21 @@
             transform: scale(0.98);
         }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .statut {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--text-muted);
+            min-height: 20px;
+        }
+
+        .statut.succes { color: #1E8E3E; font-weight: 600; }
+        .statut.erreur { color: var(--ulaval-red); font-weight: 600; }
+
         .footer {
             text-align: center;
             padding: 20px;
@@ -149,19 +164,48 @@
 
     <main class="container">
         <div class="card">
-            <form action="https://formsubmit.co/julien.miron@mat.ulaval.ca" method="POST">
-                <!-- FormSubmit : options -->
-                <input type="hidden" name="_subject" value="STT-2902 — Nouvelle réponse">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-
+            <form id="form-reponse">
                 <label for="reponse">Votre réponse</label>
                 <textarea id="reponse" name="reponse" placeholder="Écrivez votre réponse ici…" required></textarea>
 
-                <button type="submit">Envoyer</button>
+                <button type="submit" id="btn-envoyer">Envoyer</button>
+                <p id="statut" class="statut" role="status"></p>
             </form>
         </div>
     </main>
+
+    <script>
+        // URL du déploiement Google Apps Script (voir instructions de configuration)
+        const SCRIPT_URL = 'COLLER_ICI_URL_APPS_SCRIPT';
+
+        const form = document.getElementById('form-reponse');
+        const bouton = document.getElementById('btn-envoyer');
+        const statut = document.getElementById('statut');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            bouton.disabled = true;
+            statut.textContent = 'Envoi en cours…';
+            statut.className = 'statut';
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ reponse: form.reponse.value })
+                });
+                statut.textContent = 'Réponse envoyée. Merci!';
+                statut.className = 'statut succes';
+                form.reset();
+            } catch (err) {
+                statut.textContent = "Erreur lors de l'envoi. Veuillez réessayer.";
+                statut.className = 'statut erreur';
+            } finally {
+                bouton.disabled = false;
+            }
+        });
+    </script>
 
     <footer class="footer">
         Pour toute question, contactez <a href="mailto:julien.miron@mat.ulaval.ca">julien.miron@mat.ulaval.ca</a>.
