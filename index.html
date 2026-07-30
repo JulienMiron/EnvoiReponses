@@ -176,7 +176,7 @@
 
     <script>
         // URL du déploiement Google Apps Script (voir instructions de configuration)
-        const SCRIPT_URL = 'COLLER_ICI_URL_APPS_SCRIPT';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyv3r8wR_zARVAkuIPoQRX4-puPuV5FCt3RkeSHwmVcRSmoySWkAA0KLyat9YDu4I4BSA/exec';
 
         const form = document.getElementById('form-reponse');
         const bouton = document.getElementById('btn-envoyer');
@@ -201,7 +201,7 @@
             } catch (err) {
                 statut.textContent = "Erreur lors de l'envoi. Veuillez réessayer.";
                 statut.className = 'statut erreur';
-            } finally {
+                } finally {
                 bouton.disabled = false;
             }
         });
